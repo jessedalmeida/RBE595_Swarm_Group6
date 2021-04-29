@@ -6,6 +6,12 @@ function init() {
   reset()
 }
 
+
+# number of robots within a distance of X cm
+robots_in_dist = 0
+P = 0.01
+count = 0
+
 #
 # Executed for each step
 #
@@ -22,22 +28,35 @@ function step() {
         obst.y = obst.y / neighbors.count()
       }
 
-  # Draw the vector
-	# See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
-	debug.rays.add(
-		255, 0, 0,
-		0.0, 0.0, 0.1,
-		obst.x, obst.y, 0.1)
-
   length = math.sqrt(obst.x*obst.x + obst.y*obst.y)
 
 	threshold = 0.005
-	
-	if (length > threshold){
-		gotoc(-obst.x*100.0, -obst.y*100.0)
-	} else {
-		gotoc(10.0, 0.0)
-	}
+
+  # Draw the vector
+	# See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
+	# debug.rays.add(
+	# 	255, 0, 0,
+	# 	0.0, 0.0, 0.1,
+	# 	obst.x, obst.y, 0.1)
+  
+  Pstop = P + robots_in_dist/6
+
+  rand = math.rng.uniform(1.0)
+
+  if (rand < Pstop) {
+    gotoc(0.0, 0.0)
+    count = 10
+  }
+  else if (count < 0){
+    if (length > threshold){
+        gotoc(-obst.x*100.0, -obst.y*100.0)
+    } else {
+        gotoc(10.0, 0.0)
+    }
+  }
+  else {
+    count = count - 1
+  }
 
   debug_output()
 }
@@ -74,6 +93,6 @@ function debug_output() {
   # See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
   # Debug message written in the log
 
-	# debug.print("t=", task, "; s0=", stimulus[0], "; s1=", stimulus[1], "; T0=", T[0], "; T1=", T[1])
+	debug.print("count=", count)
   # log("R", id, ": t=", task, "; th0=", threshold[0], "; th1=", threshold[1])
 }
