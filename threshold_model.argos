@@ -105,7 +105,6 @@
                   delta="1"
                   alpha="3"
                   tasks="2">
-
   </loop_functions>  
 
   <!-- *********************** -->
@@ -126,29 +125,29 @@
 
       $ argos3 -q box
   -->
-  <arena size="5, 5, 1" center="0,0,0.5">
+  <arena size="10, 10, 1" center="0,0,0.5">
 
-    <box id="wall_north" size="4,0.1,0.5" movable="false">
-      <body position="0,2,0" orientation="0,0,0" />
+    <!-- <box id="wall_north" size="9,0.1,0.5" movable="false">
+      <body position="0,4,0" orientation="0,0,0" />
     </box>
-    <box id="wall_south" size="4,0.1,0.5" movable="false">
-      <body position="0,-2,0" orientation="0,0,0" />
+    <box id="wall_south" size="9,0.1,0.5" movable="false">
+      <body position="0,-4,0" orientation="0,0,0" />
     </box>
-    <box id="wall_east" size="0.1,4,0.5" movable="false">
-      <body position="2,0,0" orientation="0,0,0" />
+    <box id="wall_east" size="0.1,9,0.5" movable="false">
+      <body position="4,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_west" size="0.1,4,0.5" movable="false">
-      <body position="-2,0,0" orientation="0,0,0" />
-    </box>
+    <box id="wall_west" size="0.1,9,0.5" movable="false">
+      <body position="-4,0,0" orientation="0,0,0" />
+    </box> -->
 
     <!--
         You can distribute entities randomly. Here, we distribute
         20 Khepera IV robots.
     -->
     <distribute>
-      <position method="uniform" min="-2,-2,0" max="2,2,0" />
+      <position method="uniform" min="-4,-4,0" max="4,4,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="20" max_trials="100">
+      <entity quantity="100" max_trials="1000">
         <kheperaiv id="kiv" rab_data_size="100">
           <controller config="bck" />
         </kheperaiv>
@@ -207,7 +206,7 @@
       <camera>
         <placements>
           <placement index="0"
-                     position="0,0,11"
+                     position="0,0,25"
                      look_at="0,0,0"
                      up="0,1,0"
                      lens_focal_length="65" />
