@@ -31,11 +31,17 @@ function step() {
   }
   # Where does the neighbors variable come from????
 
-  num_neighbors = neighbors.reduce( function(rid,data,accum) {
-      accum = accum + 1
-      return accum
-    },
-    0)
+  debug.rays.clear()
+  if (id == 0){
+  neighbors.foreach(
+    function(rid,data) {
+      x = data.distance * math.cos(data.elevation) * math.cos(data.azimuth)
+      y = data.distance * math.cos(data.elevation) * math.sin(data.azimuth)
+      z = data.distance * math.sin(data.elevation)
+      log("Robot ", rid, ": ", "x = ", x, "y = ", y, "z = ", z )
+      debug.rays.add(255,0,0,x/100,y/100,0.5/100)
+    })
+}
 
   length = math.sqrt(obst.x*obst.x + obst.y*obst.y)
 
