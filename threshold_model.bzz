@@ -17,16 +17,25 @@ count = 0
 #
 function step() {
 
-  obst = reduce(proximity,
-		function(idx,sensor,sofar) {
-			return {
+  # obst is the average distance away from the robot all the other robots are
+  obst = reduce(proximity, # This is pythons reudce() function. Takes in list, funciton, initializer, and applies the function to every item in the list.
+		function(idx,sensor,sofar) { # Inline function to be applied to every sensor in the proximity sensor list
+			return { # sum up the proximity sensor x and y value based on their orientatino around hte robot
 				.x = sofar.x + sensor.value * math.cos(sensor.angle),
 				.y = sofar.y + sensor.value * math.sin(sensor.angle)
-			}}, { .x = 0.0, .y = 0.0 })
-      if(neighbors.count() > 0) {
-        obst.x = obst.x / neighbors.count()
-        obst.y = obst.y / neighbors.count()
-      }
+			}}, 
+      { .x = 0.0, .y = 0.0 }) # initial value to assign to sofar variable
+  if(neighbors.count() > 0) { # Taking the average value of the summed up x and y distances to get the average
+    obst.x = obst.x / neighbors.count()
+    obst.y = obst.y / neighbors.count()
+  }
+  # Where does the neighbors variable come from????
+
+  num_neighbors = neighbors.reduce( function(rid,data,accum) {
+      accum = accum + 1
+      return accum
+    },
+    0)
 
   length = math.sqrt(obst.x*obst.x + obst.y*obst.y)
 
@@ -67,7 +76,7 @@ function step() {
 function reset() {
   # Pick a default task
 	math.rng.setseed(id)
-
+	num_neighbors = 0
 	# Draw the trajectory of the robot in green
 	# See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
   # debug.trajectory.enable(100, 0, 255, 0)
@@ -93,6 +102,6 @@ function debug_output() {
   # See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
   # Debug message written in the log
 
-	debug.print("count=", count)
+	debug.print("Num+neighbors=", num_neighbors)
   # log("R", id, ": t=", task, "; th0=", threshold[0], "; th1=", threshold[1])
 }
