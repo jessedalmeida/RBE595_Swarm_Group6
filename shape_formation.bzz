@@ -11,7 +11,7 @@ function init() {
 robots_in_dist = 0
 P = 0.01
 count = -1
-stopped_count = 20
+stopped_count = 50
 isStopped = False
 
 #
@@ -25,8 +25,8 @@ function step() {
 
   debug.rays.clear()
 
-  min_dist = 100
-  max_dist = 105
+  min_dist = 12
+  max_dist = 14
   # count the number of neighbors that are within the specified range
   robots_in_dist = neighbors.reduce(function(rid, data, num){
       if ((min_dist <= data.distance) and (data.distance <= max_dist)){
@@ -47,7 +47,7 @@ function step() {
       x = data.distance * math.cos(data.elevation) * math.cos(data.azimuth)
       y = data.distance * math.cos(data.elevation) * math.sin(data.azimuth)
       z = data.distance * math.sin(data.elevation)
-      debug.rays.add(255,0,0,x/100,y/100,0.5/100)
+      # debug.rays.add(255,0,0,x/100,y/100,0.5/100)
     })
 }
 
@@ -55,7 +55,10 @@ function step() {
 # obst is the average distance away from the robot all the other robots are
   obst = reduce(proximity, # This is pythons reudce() function. Takes in list, funciton, initializer, and applies the function to every item in the list.
 		function(idx,sensor,sofar) { # Inline function to be applied to every sensor in the proximity sensor list
-			return { # sum up the proximity sensor x and y value based on their orientatino around hte robot
+			# if (id == 0) {
+      #     log("R ", id, " dist ", sensor.value)
+      # }			
+      return { # sum up the proximity sensor x and y value based on their orientatino around hte robot
 				.x = sofar.x + sensor.value * math.cos(sensor.angle),
 				.y = sofar.y + sensor.value * math.sin(sensor.angle)
 			}}, 
@@ -67,10 +70,10 @@ function step() {
   }
   length = math.sqrt(obst.x*obst.x + obst.y*obst.y)
 
-	threshold = 0.005
+	threshold = 0.001
 
   if (robots_in_dist[1] <= 6 and robots_in_dist[0] == 0){
-    Pstop = P + robots_in_dist[1]/6
+    Pstop = P + math.log(robots_in_dist[1]+1)/math.log(7)
 	}
   else{
     Pstop = P + robots_in_dist[1]^2/6^2
@@ -81,9 +84,11 @@ function step() {
   if (rand < Pstop) {
     gotoc(0.0, 0.0)
     count = stopped_count
+    # neighbors.broadcast("flash", 1
+  	set_leds(255, 255, 0) # yellow flash 
   }
   else if (count < 0){
-
+    set_leds(0,0,0)
     # obstacle avoid
     if (length > threshold){
         gotoc(-obst.x*100.0, -obst.y*100.0)
@@ -134,6 +139,6 @@ function debug_output() {
   # See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
   # Debug message written in the log
 
-	log("inside= ", robots_in_dist[0], "; within= ", robots_in_dist[1], "; outside= ", robots_in_dist[2])
+	# log("inside= ", robots_in_dist[0], "; within= ", robots_in_dist[1], "; outside= ", robots_in_dist[2])
   # log("R", id, ": t=", task, "; th0=", threshold[0], "; th1=", threshold[1])
 }
