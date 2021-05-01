@@ -106,8 +106,8 @@
                if you change 'tasks', you must change it also in the script!
                (not required for this homework, but just in case you want to play)
   -->
-  <loop_functions library="build/libthreshold_model"
-                  label="threshold_model"
+  <loop_functions library="build/libshape_formation"
+                  label="shape_formation"
                   outfile="data.dat"
                   delta="1"
                   alpha="3"

@@ -1,4 +1,4 @@
-#include "threshold_model.h"
+#include "shape_formation.h"
 #include "buzz/buzzvm.h"
 
 static CRange<Real> STIMULUS_RANGE(0.0, 5000.0);
@@ -98,7 +98,7 @@ struct PutStimuli : public CBuzzLoopFunctions::COperation {
 /****************************************/
 /****************************************/
 
-void CThresholdModel::Init(TConfigurationNode& t_tree) {
+void CShapeFormation::Init(TConfigurationNode& t_tree) {
    /* Call parent Init() */
    CBuzzLoopFunctions::Init(t_tree);
    /* Parse XML tree */
@@ -122,7 +122,7 @@ void CThresholdModel::Init(TConfigurationNode& t_tree) {
 /****************************************/
 /****************************************/
 
-void CThresholdModel::Reset() {
+void CShapeFormation::Reset() {
    /* Reset the stimuli */
    for(int i = 0; i < m_vecStimuli.size(); ++i) {
       m_vecStimuli[i] = 50;
@@ -138,14 +138,14 @@ void CThresholdModel::Reset() {
 /****************************************/
 /****************************************/
 
-void CThresholdModel::Destroy() {
+void CShapeFormation::Destroy() {
    m_cOutFile.close();
 }
 
 /****************************************/
 /****************************************/
 
-void CThresholdModel::PostStep() {
+void CShapeFormation::PostStep() {
    /* Get robot data */
    GetRobotData cGetRobotData(m_vecStimuli.size());
    BuzzForeachVM(cGetRobotData);
@@ -173,7 +173,7 @@ void CThresholdModel::PostStep() {
 /****************************************/
 /****************************************/
 
-bool CThresholdModel::IsExperimentFinished() {
+bool CShapeFormation::IsExperimentFinished() {
    /* Feel free to try out custom ending conditions */
    return false;
 }
@@ -181,14 +181,14 @@ bool CThresholdModel::IsExperimentFinished() {
 /****************************************/
 /****************************************/
 
-int CThresholdModel::GetNumRobots() const {
+int CShapeFormation::GetNumRobots() const {
    return m_mapBuzzVMs.size();
 }
 
 /****************************************/
 /****************************************/
 
-void CThresholdModel::BuzzBytecodeUpdated() {
+void CShapeFormation::BuzzBytecodeUpdated() {
    /* Convey the stimuli to every robot */
    BuzzForeachVM(PutStimuli(m_vecStimuli));
 }
@@ -196,4 +196,4 @@ void CThresholdModel::BuzzBytecodeUpdated() {
 /****************************************/
 /****************************************/
 
-REGISTER_LOOP_FUNCTIONS(CThresholdModel, "threshold_model");
+REGISTER_LOOP_FUNCTIONS(CShapeFormation, "shape_formation");

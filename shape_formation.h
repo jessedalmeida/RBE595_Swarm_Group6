@@ -4,12 +4,12 @@
 #include <buzz/argos/buzz_loop_functions.h>
 #include <argos3/core/utility/math/rng.h>
 
-class CThresholdModel : public CBuzzLoopFunctions {
+class CShapeFormation : public CBuzzLoopFunctions {
 
 public:
 
-   CThresholdModel() {}
-   virtual ~CThresholdModel() {}
+   CShapeFormation() {}
+   virtual ~CShapeFormation() {}
 
    /**
     * Executes user-defined initialization logic.

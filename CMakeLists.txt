@@ -22,8 +22,8 @@ find_package(Buzz REQUIRED)
 include_directories(${BUZZ_C_INCLUDE_DIR})
 
 # Compile code
-add_library(threshold_model SHARED threshold_model.h threshold_model.cpp)
-target_link_libraries(threshold_model
+add_library(shape_formation SHARED shape_formation.h shape_formation.cpp)
+target_link_libraries(shape_formation
   ${BUZZ_LIBRARY}
   argos3core_simulator
   argos3plugin_simulator_dynamics2d
