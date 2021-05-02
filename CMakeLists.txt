@@ -22,8 +22,8 @@ find_package(Buzz REQUIRED)
 include_directories(${BUZZ_C_INCLUDE_DIR})
 
 # Compile code
-add_library(shape_formation SHARED shape_formation.h shape_formation.cpp)
-target_link_libraries(shape_formation
+add_library(proximity-lf SHARED proximity-lf.h proximity-lf.cpp)
+target_link_libraries(proximity-lf
   ${BUZZ_LIBRARY}
   argos3core_simulator
   argos3plugin_simulator_dynamics2d

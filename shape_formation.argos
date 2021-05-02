@@ -77,10 +77,10 @@
           $ argos3 -q sensors
       -->
       <sensors>
-        <kheperaiv_proximity implementation="default" show_rays="false" />
+        <kheperaiv_proximity implementation="default" show_rays="true" />
         <range_and_bearing   implementation="medium" medium="rab"
                              show_rays="false" noise_std_dev="0" />
-        <proximity           implementation="default" show_rays="true" />
+        <!-- <proximity           implementation="default" show_rays="true" /> -->
         <positioning         implementation="default" />
       </sensors>
 
@@ -106,13 +106,13 @@
                if you change 'tasks', you must change it also in the script!
                (not required for this homework, but just in case you want to play)
   -->
-  <loop_functions library="build/libshape_formation"
+  <!-- <loop_functions library="build/libshape_formation"
                   label="shape_formation"
                   outfile="data.dat"
                   delta="1"
                   alpha="3"
                   tasks="2">
-  </loop_functions>
+  </loop_functions> -->
 
   <loop_functions library="build/libproximity-lf"
                   label="proximity-lf"
