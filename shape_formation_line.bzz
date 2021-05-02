@@ -3,6 +3,35 @@
 # Executed once at init time
 #
 function init() {
+
+
+	# initialize stopped to 0
+	stopped = 0 
+	
+	# listen for an agent telling you they are forming a line with you
+	neighbors.listen("line_init",
+    function(topic, value, robot){
+
+			# send a message to reciprecate the stop initiative
+			neighbors.broadcast("line_reciprecate", robot)
+			# log
+      log("Got (", topic, ",", value, ") from robot id=", robot)
+    })
+
+	# listen for an agent telling you they are forming a line with you
+	neighbors.listen("line_reciprecate",
+    function(topic, value, robot){
+
+			if (value == id){ # message was intended for this robot
+				# stop moving
+				gotoc(0.0, 0.0)
+				stopped = 1
+				# log
+      		log(Got (", topic, ",", value, ") from robot id=", robot)
+			}
+			
+    })
+
   reset()
 }
 
@@ -13,6 +42,7 @@ P = 0.01
 count = -1
 stopped_count = 20
 isStopped = False
+distance_in_line = 3
 
 #
 # Executed for each step
@@ -25,8 +55,8 @@ function step() {
 
   debug.rays.clear()
 
-  min_dist = 100
-  max_dist = 105
+  min_dist = 3
+  max_dist = 4
   # count the number of neighbors that are within the specified range
   robots_in_dist = neighbors.reduce(function(rid, data, num){
       if ((min_dist <= data.distance) and (data.distance <= max_dist)){
@@ -49,7 +79,7 @@ function step() {
       z = data.distance * math.sin(data.elevation)
       debug.rays.add(255,0,0,x/100,y/100,0.5/100)
     })
-}
+	}
 
 # ------------------ Obstacle Avoidance ------------
 # obst is the average distance away from the robot all the other robots are
@@ -69,30 +99,39 @@ function step() {
 
 	threshold = 0.005
 
-  if (robots_in_dist[1] <= 6 and robots_in_dist[0] == 0){
-    Pstop = P + robots_in_dist[1]/6
+  if (robots_in_dist[1] <= 2 and robots_in_dist[0] == 0){ # broadcast how many neighbors are within the range
+		neighbors.broadcast("line_init", 68678)
+    #gotoc(0.0, 0.0)
+		#Pstop = P + robots_in_dist[1]/6
 	}
   else{
-    Pstop = P + robots_in_dist[1]^2/6^2
-  }
-
-  rand = math.rng.uniform(1.0)
-
-  if (rand < Pstop) {
-    gotoc(0.0, 0.0)
-    count = stopped_count
-  }
-  else if (count < 0){
-
-    # obstacle avoid
+		# obstacle avoid
     if (length > threshold){
         gotoc(-obst.x*100.0, -obst.y*100.0)
     } else {
         gotoc(10.0, 0.0)
     }
-    
+    #Pstop = P + robots_in_dist[1]^2/6^2
   }
+
+  rand = math.rng.uniform(1.0)
+
+  #if (rand < Pstop) {
+    #gotoc(0.0, 0.0)
+    #count = stopped_count
+  #}
+  #else if (count < 0){
+
+    # obstacle avoid
+    #if (length > threshold){
+        #gotoc(-obst.x*100.0, -obst.y*100.0)
+    #} else {
+        #gotoc(10.0, 0.0)
+    #}
+    
+  #}
   count = count - 1
+
 
   debug_output()
 }
