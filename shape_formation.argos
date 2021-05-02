@@ -116,7 +116,7 @@
 
   <loop_functions library="build/libproximity-lf"
                   label="proximity-lf"
-                  proximity_range="1.0" />
+                  proximity_range="0.25" />
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
@@ -136,19 +136,19 @@
 
       $ argos3 -q box
   -->
-  <arena size="4,4, 1" center="0,0,0.5">
+  <arena size="6, 6, 1" center="0,0,0.5">
 
-    <box id="wall_north" size="4,0.1,0.5" movable="false">
-      <body position="0,2,0" orientation="0,0,0" />
+    <box id="wall_north" size="6,0.1,0.5" movable="false">
+      <body position="0,3,0" orientation="0,0,0" />
     </box>
-    <box id="wall_south" size="4,0.1,0.5" movable="false">
-      <body position="0,-2,0" orientation="0,0,0" />
+    <box id="wall_south" size="6,0.1,0.5" movable="false">
+      <body position="0,-3,0" orientation="0,0,0" />
     </box>
-    <box id="wall_east" size="0.1,4,0.5" movable="false">
-      <body position="2,0,0" orientation="0,0,0" />
+    <box id="wall_east" size="0.1,6,0.5" movable="false">
+      <body position="3,0,0" orientation="0,0,0" />
     </box>
-    <box id="wall_west" size="0.1,4,0.5" movable="false">
-      <body position="-2,0,0" orientation="0,0,0" />
+    <box id="wall_west" size="0.1,6,0.5" movable="false">
+      <body position="-3,0,0" orientation="0,0,0" />
     </box>
 
     <!--
@@ -156,9 +156,9 @@
         20 Khepera IV robots.
     -->
     <distribute>
-      <position method="uniform" min="-2,-2,0" max="2,2,0" />
+      <position method="uniform" min="-3,-3,0" max="3,3,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="150" max_trials="1000">
+      <entity quantity="10" max_trials="1000">
         <kheperaiv id="kiv" rab_data_size="100">
           <controller config="sync" />
         </kheperaiv>
@@ -220,7 +220,7 @@
                      position="0,0,25"
                      look_at="0,0,0"
                      up="0,1,0"
-                     lens_focal_length="150" />
+                     lens_focal_length="110" />
           <placement index="1"
                      position="4.42741,3.38215,2.51354"
                      look_at="3.7126,2.81745,2.10105"
