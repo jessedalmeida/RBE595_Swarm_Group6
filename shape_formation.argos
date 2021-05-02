@@ -33,9 +33,9 @@
   <!-- *************** -->
   <controllers>
 
-    <!-- 
+    <!--
          Here you list the controllers to be used in the experiment.
-         
+
          The attributes are:
          - id: a unique a identifier for this controller, to be used in the
            subsequent <arena> section to say which robots use which
@@ -77,7 +77,7 @@
           $ argos3 -q sensors
       -->
       <sensors>
-        <kheperaiv_proximity implementation="default" show_rays="false" />
+        <kheperaiv_proximity implementation="default" show_rays="true" />
         <range_and_bearing   implementation="medium" medium="rab"
                              show_rays="false" noise_std_dev="0" />
         <!-- <proximity           implementation="default" show_rays="true" /> -->
@@ -106,13 +106,17 @@
                if you change 'tasks', you must change it also in the script!
                (not required for this homework, but just in case you want to play)
   -->
-  <loop_functions library="build/libshape_formation"
+  <!-- <loop_functions library="build/libshape_formation"
                   label="shape_formation"
                   outfile="data.dat"
                   delta="1"
                   alpha="3"
                   tasks="2">
-  </loop_functions>  
+  </loop_functions> -->
+
+  <loop_functions library="build/libproximity-lf"
+                  label="proximity-lf"
+                  proximity_range="1.0" />
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
@@ -125,7 +129,7 @@
       origin.
       To get help about which entities are available, type at the command
       prompt:
-      
+
       $ argos3 -q entities
 
       and to get help about a specific entity (for instance, the box)
@@ -170,7 +174,7 @@
       In ARGoS, multiple physics engines can run at the same time.
       In this section you say which engines to use for the experiment.
       To know which engines are available, type at the command prompt:
-      
+
       $ argos3 -q physics_engines
   -->
   <physics_engines>
