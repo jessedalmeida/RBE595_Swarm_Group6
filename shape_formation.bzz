@@ -11,7 +11,7 @@ function init() {
 robots_in_dist = 0
 P = 0.01
 count = -1
-stopped_count = 50
+stopped_count = 5
 isStopped = False
 
 #
@@ -25,8 +25,8 @@ function step() {
 
   debug.rays.clear()
 
-  min_dist = 12
-  max_dist = 14
+  min_dist = 24.0
+  max_dist = 25.0
   # count the number of neighbors that are within the specified range
   robots_in_dist = neighbors.reduce(function(rid, data, num){
       if ((min_dist <= data.distance) and (data.distance <= max_dist)){
@@ -41,15 +41,15 @@ function step() {
       return num
   }, {.0=0.0, .1=0.0, .2=0.0})
 
-  if (id == 0){
-  neighbors.foreach(
-    function(rid,data) {
-      x = data.distance * math.cos(data.elevation) * math.cos(data.azimuth)
-      y = data.distance * math.cos(data.elevation) * math.sin(data.azimuth)
-      z = data.distance * math.sin(data.elevation)
-      # debug.rays.add(255,0,0,x/100,y/100,0.5/100)
-    })
-}
+  # if (id == 0){
+  # neighbors.foreach(
+  #   function(rid,data) {
+  #     x = data.distance * math.cos(data.elevation) * math.cos(data.azimuth)
+  #     y = data.distance * math.cos(data.elevation) * math.sin(data.azimuth)
+  #     z = data.distance * math.sin(data.elevation)
+  #     # debug.rays.add(255,0,0,x/100,y/100,0.5/100)
+  #   })
+# }
 
 # ------------------ Obstacle Avoidance ------------
 # obst is the average distance away from the robot all the other robots are
@@ -68,11 +68,8 @@ function step() {
     obst.x = obst.x / neighbors.count()
     obst.y = obst.y / neighbors.count()
   }
-  length = math.sqrt(obst.x*obst.x + obst.y*obst.y)
 
-	threshold = 0.001
-
-  if (robots_in_dist[1] <= 6 and robots_in_dist[0] == 0){
+  if ((robots_in_dist[1] <= 6 and robots_in_dist[0] == 0) or (count > 0)){
     Pstop = P + math.log(robots_in_dist[1]+1)/math.log(7)
 	}
   else{
@@ -90,12 +87,18 @@ function step() {
   else if (count < 0){
     set_leds(0,0,0)
     # obstacle avoid
-    if (length > threshold){
-        gotoc(-obst.x*100.0, -obst.y*100.0)
-    } else {
-        gotoc(10.0, 0.0)
+    v = math.sqrt(obst.x*obst.x + obst.y*obst.y) # Relative "distance" from proximity sensors
+    threshold = 0.001 # Threshold at which to start moving away from obstacles
+	  max_speed = 7.0 # max speed
+    if (v > threshold) {
+      xspeed = obst.x/v * max_speed # motor speed in x direction normalized
+      yspeed = obst.y/v * max_speed # motor speed in y direction normalized
+      gotoc(-xspeed,-yspeed) # move in exact oposite direction of obstacle 
     }
-    
+    else {
+      #	 Move straight
+      gotoc(max_speed, 0.0)           # velocity vector in cartesian coordinates (cm/s)
+    }
   }
   count = count - 1
 
@@ -138,7 +141,9 @@ function debug_output() {
   # Debug message written on top of robot
   # See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
   # Debug message written in the log
-
-	# log("inside= ", robots_in_dist[0], "; within= ", robots_in_dist[1], "; outside= ", robots_in_dist[2])
+	if (robots_in_dist[0] > 0) {
+		log("R ",id," inside= ", robots_in_dist[0], "; within= ", robots_in_dist[1], "; outside= ", robots_in_dist[2])
+	}
+	# 
   # log("R", id, ": t=", task, "; th0=", threshold[0], "; th1=", threshold[1])
 }
