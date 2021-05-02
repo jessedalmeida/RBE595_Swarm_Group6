@@ -33,9 +33,9 @@
   <!-- *************** -->
   <controllers>
 
-    <!-- 
+    <!--
          Here you list the controllers to be used in the experiment.
-         
+
          The attributes are:
          - id: a unique a identifier for this controller, to be used in the
            subsequent <arena> section to say which robots use which
@@ -112,7 +112,11 @@
                   delta="1"
                   alpha="3"
                   tasks="2">
-  </loop_functions>  
+  </loop_functions>
+
+  <loop_functions library="build/libproximity-lf"
+                  label="proximity-lf"
+                  proximity_range="1.0" />
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
@@ -125,7 +129,7 @@
       origin.
       To get help about which entities are available, type at the command
       prompt:
-      
+
       $ argos3 -q entities
 
       and to get help about a specific entity (for instance, the box)
@@ -170,7 +174,7 @@
       In ARGoS, multiple physics engines can run at the same time.
       In this section you say which engines to use for the experiment.
       To know which engines are available, type at the command prompt:
-      
+
       $ argos3 -q physics_engines
   -->
   <physics_engines>
