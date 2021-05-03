@@ -2,6 +2,7 @@
 #define PROXIMITY_H
 
 #include <buzz/argos/buzz_loop_functions.h>
+#include <argos3/core/utility/math/rng.h>
 
 class CProximityLF : public CBuzzLoopFunctions {
 
@@ -14,7 +15,7 @@ public:
     * Executes user-defined initialization logic.
     * @param t_tree The 'loop_functions' XML configuration tree.
     */
-   void Init(TConfigurationNode& t_tree) override;
+   virtual void Init(TConfigurationNode& t_tree);
 
    /**
     * Executes user-defined reset logic.
@@ -22,11 +23,46 @@ public:
     * after Init() was called.
     * @see Init()
     */
-   void Reset() override;
+   virtual void Reset();
+
+   /**
+    * Executes user-defined logic right after a control step is executed.
+    */
+   virtual void PostStep();
+   
+   /**
+    * Returns true if the experiment is finished, false otherwise.
+    *
+    * This method allows the user to specify experiment-specific ending
+    * conditions. If this function returns false and a time limit is set in the
+    * .argos file, the experiment will reach the time limit and end there. If no
+    * time limit was set, then this function is the only ending condition.
+    *
+    * @return true if the experiment is finished.
+    */
+   virtual bool IsExperimentFinished();
+
+   /**
+    * Executes user-defined destruction logic.
+    * This method should undo whatever is done in Init().
+    * @see Init()
+    */
+   virtual void Destroy();
 
 private:
 
-   Real m_fProximityRange;
+   int GetNumRobots() const;
+
+private: 
+   /** The output file name */
+   std::string m_strOutFile;
+
+   /** The output file stream */
+   std::ofstream m_cOutFile;
+   
+   /** Random number generator */
+   CRandom::CRNG* m_pcRNG;
+
 
 };
 

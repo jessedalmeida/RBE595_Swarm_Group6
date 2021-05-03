@@ -1,9 +1,3 @@
-/**
- * @file <argos3/plugins/robots/kheperaiv/simulator/kheperaiv_proximity_default_sensor.cpp>
- *
- * @author Carlo Pinciroli - <ilpincy@gmail.com>
- */
-
 #include <argos3/core/simulator/entity/embodied_entity.h>
 #include <argos3/core/simulator/entity/composable_entity.h>
 #include <argos3/core/simulator/simulator.h>
@@ -16,11 +10,26 @@ namespace argos {
    /****************************************/
    /****************************************/
 
-   class CKheperaIVProximitySensorImpl : public CProximityDefaultSensor {
+   class CKheperaIVProximityGroup6SensorImpl : public CProximityDefaultSensor {
 
    public:
 
-      virtual void SetRobot(CComposableEntity& c_entity) {
+      void Init(TConfigurationNode& t_tree) override {
+         /* Parse original attributes */
+         CProximityDefaultSensor::Init(t_tree);
+         /* Parse the range attribute */
+         GetNodeAttribute(t_tree, "range", m_fRange);
+         /* Go through the sensors */
+         for(auto itSensor = m_pcProximityEntity->GetSensors().begin();
+             itSensor != m_pcProximityEntity->GetSensors().end();
+             ++itSensor) {
+            /* Change the range */
+            (*itSensor)->Direction.Normalize();
+            (*itSensor)->Direction *= m_fRange;
+         }
+      }
+
+      void SetRobot(CComposableEntity& c_entity) override {
          try {
             m_pcEmbodiedEntity = &(c_entity.GetComponent<CEmbodiedEntity>("body"));
             m_pcControllableEntity = &(c_entity.GetComponent<CControllableEntity>("controller"));
@@ -28,21 +37,18 @@ namespace argos {
             m_pcProximityEntity->Enable();
          }
          catch(CARGoSException& ex) {
-            THROW_ARGOSEXCEPTION_NESTED("Can't set robot for the Khepera IV proximity default sensor", ex);
+            THROW_ARGOSEXCEPTION_NESTED("Can't set robot for the Khepera IV proximity group6 sensor", ex);
          }
       }
 
-      virtual Real CalculateReading(Real f_distance) {
-         if(f_distance < 0.04) {
-            return 1.0;
-         }
-         else if(f_distance > 0.12){
-            return 0.0;
-         }
-         else {
-            return 4.14*exp(-33.0*f_distance)-.085;
-         }
+      Real CalculateReading(Real f_distance) override {
+         /* Feel free to change this function! */
+         return Exp(-f_distance);
       }
+
+   protected:
+
+      Real m_fRange;
 
    };
 
@@ -50,7 +56,7 @@ namespace argos {
    /****************************************/
 
    CKheperaIVProximityGroup6Sensor::CKheperaIVProximityGroup6Sensor() :
-      m_pcProximityImpl(new CKheperaIVProximitySensorImpl()) {}
+      m_pcProximityImpl(new CKheperaIVProximityGroup6SensorImpl()) {}
 
    /****************************************/
    /****************************************/
@@ -67,7 +73,7 @@ namespace argos {
          m_pcProximityImpl->SetRobot(c_entity);
       }
       catch(CARGoSException& ex) {
-         THROW_ARGOSEXCEPTION_NESTED("Can't set robot for the Khepera IV proximity default sensor", ex);
+         THROW_ARGOSEXCEPTION_NESTED("Can't set robot for the Khepera IV proximity group6 sensor", ex);
       }
    }
 
@@ -102,7 +108,7 @@ namespace argos {
                    "kheperaiv_proximity", "group6",
                    "Carlo Pinciroli [ilpincy@gmail.com]",
                    "1.0",
-                   "The Khepera IV proximity sensor.",
+                   "The Khepera IV proximity sensor adapted for Group 6.",
                    "This sensor accesses the Khepera IV proximity sensor. For a complete description\n"
                    "of its usage, refer to the ci_kheperaiv_proximity_sensor.h interface. For the XML\n"
                    "configuration, refer to the default proximity sensor.\n",
