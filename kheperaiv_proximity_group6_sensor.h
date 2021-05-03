@@ -1,9 +1,3 @@
-/**
- * @file <argos3/plugins/robots/kheperaiv/simulator/kheperaiv_proximity_default_sensor.h>
- *
- * @author Carlo Pinciroli - <ilpincy@gmail.com>
- */
-
 #ifndef KHEPERAIV_PROXIMITY_GROUP6_SENSOR_H
 #define KHEPERAIV_PROXIMITY_GROUP6_SENSOR_H
 
@@ -20,13 +14,13 @@ namespace argos {
 namespace argos {
 
    class CKheperaIVProximityGroup6Sensor : public CCI_KheperaIVProximitySensor,
-                                            public CSimulatedSensor {
+                                           public CSimulatedSensor {
 
    public:
 
-      CKheperaIVProximityDefaultSensor();
+      CKheperaIVProximityGroup6Sensor();
 
-      virtual ~CKheperaIVProximityDefaultSensor();
+      virtual ~CKheperaIVProximityGroup6Sensor();
 
       virtual void SetRobot(CComposableEntity& c_entity);
 
