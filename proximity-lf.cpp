@@ -13,7 +13,7 @@ REGISTER_LOOP_FUNCTIONS(CProximityLF, "proximity-lf");
 struct GetRobotData : public CBuzzLoopFunctions::COperation {
 
    /** Constructor */
-   GetRobotData() {}
+   GetRobotData(void) {}
 
    /** The action happens here */
    virtual void operator()(const std::string& str_robot_id,
@@ -22,7 +22,7 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
       buzzobj_t tValidNeighbors = BuzzGet(t_vm, "validNeighbors");
       /* Make sure it's the type we expect (an integer) */
       if(!buzzobj_isint(tValidNeighbors)) {
-         LOGERR << str_robot_id << ": variable 'task' has wrong type " << buzztype_desc[tValidNeighbors->o.type] << std::endl;
+         LOGERR << str_robot_id << ": variable 'tValidNeighbors' has wrong type " << buzztype_desc[tValidNeighbors->o.type] << std::endl;
          return;
       }
       /* Get the value */
@@ -34,7 +34,7 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
       buzzobj_t tInvalidNeighbors = BuzzGet(t_vm, "invalidNeighbors");
       /* Make sure it's the type we expect (an integer) */
       if(!buzzobj_isint(tInvalidNeighbors)) {
-         LOGERR << str_robot_id << ": variable 'task' has wrong type " << buzztype_desc[tInvalidNeighbors->o.type] << std::endl;
+         LOGERR << str_robot_id << ": variable 'tInvalidNeighbors' has wrong type " << buzztype_desc[tInvalidNeighbors->o.type] << std::endl;
          return;
       }
       /* Get the value */
@@ -47,7 +47,7 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
       buzzobj_t tCount = BuzzGet(t_vm, "count");
       /* Make sure it's the type we expect (an integer) */
       if(!buzzobj_isint(tCount)) {
-         LOGERR << str_robot_id << ": variable 'task' has wrong type " << buzztype_desc[tCount->o.type] << std::endl;
+         LOGERR << str_robot_id << ": variable 'tCount' has wrong type " << buzztype_desc[tCount->o.type] << std::endl;
          return;
       }
       /* Get the value */
@@ -89,11 +89,11 @@ void CProximityLF::Destroy() {
 /****************************************/
 
 void CProximityLF::PostStep() {
-   /* Get robot data */
-   GetRobotData cGetRobotData();
-   BuzzForeachVM(cGetRobotData);
-   
-   /* Flush data to the output file */
+    /* Get robot data */
+    GetRobotData cGetRobotData;
+    BuzzForeachVM(cGetRobotData);
+
+    /* Flush data to the output file */
     for(int i = 0; i < GetNumRobots(); ++i) {
         m_cOutFile << GetSpace().GetSimulationClock() << "\t"
                 << i << "\t"
@@ -102,7 +102,6 @@ void CProximityLF::PostStep() {
                 << cGetRobotData.m_stopped[i];
         m_cOutFile << std::endl;
     }
-
 }
 
 /****************************************/

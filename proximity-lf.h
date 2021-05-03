@@ -49,16 +49,20 @@ public:
     */
    virtual void Destroy();
 
-   private:
+private:
 
-      int GetNumRobots() const;
+   int GetNumRobots() const;
 
-   private: 
-      /** The output file name */
-      std::string m_strOutFile;
+private: 
+   /** The output file name */
+   std::string m_strOutFile;
 
-      /** The output file stream */
-      std::ofstream m_cOutFile;
+   /** The output file stream */
+   std::ofstream m_cOutFile;
+   
+   /** Random number generator */
+   CRandom::CRNG* m_pcRNG;
+
 
 };
 
