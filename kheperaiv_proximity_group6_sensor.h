@@ -24,9 +24,9 @@ namespace argos {
 
    public:
 
-      CKheperaIVProximityDefaultSensor();
+      CKheperaIVProximityGroup6Sensor();
 
-      virtual ~CKheperaIVProximityDefaultSensor();
+      virtual ~CKheperaIVProximityGroup6Sensor();
 
       virtual void SetRobot(CComposableEntity& c_entity);
 
