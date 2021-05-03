@@ -116,7 +116,8 @@
 
   <loop_functions library="build/libproximity-lf"
                   label="proximity-lf"
-                  proximity_range="0.25" />
+                  proximity_range="0.25" 
+                  outfile="data.dat"/>
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->

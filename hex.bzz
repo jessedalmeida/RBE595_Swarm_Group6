@@ -31,18 +31,20 @@ function step() {
   # count the number of neighbors that are within the specified range
   robots_in_dist = neighbors.reduce(function(rid, data, num){
       if ((min_dist <= data.distance) and (data.distance <= max_dist)){
-          num[1] = num[1] + 1.0
+          num[1] = num[1] + 1
       }
       else if (data.distance < min_dist){
-          num[0] = num[0] + 1.0
+          num[0] = num[0] + 1
 					# num.x = num.x + (1.0/data.distance) * math.cos(data.azimuth)*math.cos(data.elevation)
 					# num.y = num.y + (1.0/data.distance) * math.sin(data.azimuth)*math.cos(data.elevation)
       }
       else {
-        num[2] = num[2] + 1.0
+        num[2] = num[2] + 1
       }
       return num
   }, {.0=0.0, .1=0.0, .2=0.0, .x=0.0, .y=0.0})
+	validNeighbors = robots_in_dist[1]
+	invalidNeighbors = robots_in_dist[0]
 
   # if (id == 0){
   # neighbors.foreach(
