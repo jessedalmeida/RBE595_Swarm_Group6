@@ -11,7 +11,7 @@ function init() {
 robots_in_dist = 0
 P = 0.01
 count = -1
-stopped_count = 10
+stopped_count = 50
 isStopped = False
 
 #
@@ -25,9 +25,8 @@ function step() {
 
   debug.rays.clear()
 
-  min_dist = 34.0
-  max_dist = min_dist + 1.0
-	avoid_dist = 40.0
+  min_dist = 29.0
+  max_dist = min_dist + 1.25
   # count the number of neighbors that are within the specified range
   robots_in_dist = neighbors.reduce(function(rid, data, num){
       if ((min_dist <= data.distance) and (data.distance <= max_dist)){
