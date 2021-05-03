@@ -117,7 +117,7 @@
   <loop_functions library="build/libproximity-lf"
                   label="proximity-lf"
                   proximity_range="0.25" 
-                  outfile="data.dat"/>
+                  outfile="MatlabAnalysis/data.dat"/>
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
