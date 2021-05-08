@@ -23,9 +23,9 @@
           or set to zero, this value is taken from the clock and a warning
           message is displayed.
     -->
-    <experiment length="500"
+    <experiment length="150"
                 ticks_per_second="10"
-                random_seed="123" />
+                random_seed="0" />
   </framework>
 
   <!-- *************** -->
@@ -77,7 +77,7 @@
           $ argos3 -q sensors
       -->
       <sensors>
-        <kheperaiv_proximity implementation="group6" range="0.20" show_rays="true" />
+        <kheperaiv_proximity implementation="group6" range="0.15" show_rays="true" />
         <range_and_bearing   implementation="medium" medium="rab"
                              show_rays="false" noise_std_dev="0" />
         <!-- <proximity           implementation="default" show_rays="true" /> -->
