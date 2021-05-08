@@ -116,7 +116,7 @@
 
   <loop_functions library="build/libproximity-lf"
                   label="proximity-lf"
-                  proximity_range="0.15" 
+                  proximity_range="0.15"
                   outfile="MatlabAnalysis/data.dat"/>
 
   <!-- *********************** -->
@@ -137,7 +137,7 @@
 
       $ argos3 -q box
   -->
-  
+
   <arena size="6, 6, 1" center="0,0,0.5">
 
     <box id="wall_north" size="6,0.1,0.5" movable="false">
