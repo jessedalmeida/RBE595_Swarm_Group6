@@ -117,7 +117,7 @@
   <loop_functions library="build/libproximity-lf"
                   label="proximity-lf"
                   proximity_range="0.15"
-                  outfile="MatlabAnalysis/data.dat"/>
+                  outfile="MatlabAnalysis/stoptime_10_1.dat"/>
 
   <!-- *********************** -->
   <!-- * Arena configuration * -->
@@ -160,7 +160,7 @@
     <distribute>
       <position method="uniform" min="-2,-2,0" max="2,2 ,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="100" max_trials="1000">
+      <entity quantity="125" max_trials="1000">
         <kheperaiv id="kiv" rab_data_size="100">
           <controller config="bck" />
         </kheperaiv>
