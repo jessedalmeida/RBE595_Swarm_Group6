@@ -11,7 +11,7 @@ function init() {
 robots_in_dist = 0
 P = 0.01
 count = -1
-stopped_count = 50
+stopped_count = 20 # 20 is the default count stopping 
 isStopped = False
 
 #
@@ -25,8 +25,8 @@ function step() {
 
   debug.rays.clear()
 
-  min_dist = 29.0
-  max_dist = min_dist + 1.25
+  min_dist = 28
+  max_dist = min_dist + 2
   # count the number of neighbors that are within the specified range
   robots_in_dist = neighbors.reduce(function(rid, data, num){
       if ((min_dist <= data.distance) and (data.distance <= max_dist)){
@@ -34,8 +34,6 @@ function step() {
       }
       else if (data.distance < min_dist){
           num[0] = num[0] + 1
-					# num.x = num.x + (1.0/data.distance) * math.cos(data.azimuth)*math.cos(data.elevation)
-					# num.y = num.y + (1.0/data.distance) * math.sin(data.azimuth)*math.cos(data.elevation)
       }
       else {
         num[2] = num[2] + 1
@@ -45,62 +43,42 @@ function step() {
 	validNeighbors = robots_in_dist[1]
 	invalidNeighbors = robots_in_dist[0]
 
-  # if (id == 0){
-  # neighbors.foreach(
-  #   function(rid,data) {
-  #     x = data.distance * math.cos(data.elevation) * math.cos(data.azimuth)
-  #     y = data.distance * math.cos(data.elevation) * math.sin(data.azimuth)
-  #     z = data.distance * math.sin(data.elevation)
-  #     # debug.rays.add(255,0,0,x/100,y/100,0.5/100)
-  #   })
-# }
 
 # ------------------ Obstacle Avoidance ------------
 # obst is the average distance away from the robot all the other robots are
   obst = reduce(proximity, # This is pythons reudce() function. Takes in list, funciton, initializer, and applies the function to every item in the list.
 		function(idx,sensor,sofar) { # Inline function to be applied to every sensor in the proximity sensor list
-			# if (id == 0) {
-      #     log("R ", id, " dist ", sensor.value)
-      # }			
       return { # sum up the proximity sensor x and y value based on their orientatino around hte robot
 				.x = sofar.x + sensor.value * math.cos(sensor.angle),
 				.y = sofar.y + sensor.value * math.sin(sensor.angle)
 			}}, 
       {.x = 0.0, .y = 0.0}) # initial value to assign to sofar variable
-  
-  robots_in_dist.x = robots_in_dist.x + obst.x
-  robots_in_dist.y = robots_in_dist.y + obst.y
 
   if(neighbors.count() > 0) { # Taking the average value of the summed up x and y distances to get the average
-    robots_in_dist.x = robots_in_dist.x / neighbors.count()
-    robots_in_dist.y = robots_in_dist.y / neighbors.count()
+    obst.x = obst.x / neighbors.count()
+    obst.y = obst.y / neighbors.count()
   }
 
-  if ((robots_in_dist[1] <= 6 and robots_in_dist[0] == 0) or (count > 0)){
-    # Pstop = P + math.log(robots_in_dist[1]+1)/math.log(7)
-		Pstop = P + robots_in_dist[1]/6.0
-	}
-  else{
-    Pstop = P + robots_in_dist[1]^2/6^2
-  }
+  # Probabalistic stopping
+	Pstop = P + robots_in_dist[1]/6.0 # linear
+  # Pstop = P + math.log(robots_in_dist[1]+1)/math.log(7) # log 
 
   rand = math.rng.uniform(1.0)
 
   if (rand < Pstop) {
     gotoc(0.0, 0.0)
     count = stopped_count
-    # neighbors.broadcast("flash", 1
   	set_leds(255, 255, 0) # yellow flash 
   }
   else if (count < 0){
     set_leds(0,0,0)
     # obstacle avoid
-    v = math.sqrt(robots_in_dist.x^2 + robots_in_dist.y^2) # Relative "distance" from proximity sensors
+    v = math.sqrt(obst.x^2 + obst.y^2) # Relative "distance" from proximity sensors
     threshold = 0.001 # Threshold at which to start moving away from obstacles
-	  max_speed = 7.0 # max speed
+	  max_speed = 15.0 # max speed (in argos config file its set to 15)
     if (v > threshold) {
-      xspeed = robots_in_dist.x/v * max_speed # motor speed in x direction normalized
-      yspeed = robots_in_dist.y/v * max_speed # motor speed in y direction normalized
+      xspeed = obst.x/v * max_speed # motor speed in x direction normalized
+      yspeed = obst.y/v * max_speed # motor speed in y direction normalized
       gotoc(-xspeed,-yspeed) # move in exact oposite direction of obstacle 
     }
     else {
@@ -109,6 +87,7 @@ function step() {
     }
   }
   count = count - 1
+  # count = count - (1 - robots_in_dist[1]/6.0) # Decay for being in a good neighborhood
 
   debug_output()
 }
@@ -150,7 +129,7 @@ function debug_output() {
   # See: https://the.swarming.buzz/wiki/doku.php?id=buzz_argos
   # Debug message written in the log
 	if (robots_in_dist[0] > 0) {
-		log("R ",id," inside= ", robots_in_dist[0], "; within= ", robots_in_dist[1], "; outside= ", robots_in_dist[2])
+		# log("R ",id," inside= ", robots_in_dist[0], "; within= ", robots_in_dist[1], "; outside= ", robots_in_dist[2])
 	}
 	# 
   # log("R", id, ": t=", task, "; th0=", threshold[0], "; th1=", threshold[1])
