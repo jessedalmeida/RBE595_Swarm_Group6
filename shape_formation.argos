@@ -77,7 +77,7 @@
           $ argos3 -q sensors
       -->
       <sensors>
-        <kheperaiv_proximity implementation="group6" range="0.15" show_rays="true" />
+        <kheperaiv_proximity implementation="group6" range="0.15" show_rays="false" />
         <range_and_bearing   implementation="medium" medium="rab"
                              show_rays="false" noise_std_dev="0" />
         <!-- <proximity           implementation="default" show_rays="true" /> -->
