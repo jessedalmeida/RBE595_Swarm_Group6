@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8.0)
-project(RBE595CS525_HW10)
+project(proximity-lf)
 
 # Compile in Release by default
 if(CMAKE_BUILD_TYPE STREQUAL "")
@@ -22,7 +22,9 @@ find_package(Buzz REQUIRED)
 include_directories(${BUZZ_C_INCLUDE_DIR})
 
 # Compile code
-add_library(proximity-lf SHARED proximity-lf.h proximity-lf.cpp)
+add_library(proximity-lf SHARED
+  proximity-lf.h proximity-lf.cpp
+  kheperaiv_proximity_group6_sensor.h kheperaiv_proximity_group6_sensor.cpp)
 target_link_libraries(proximity-lf
   ${BUZZ_LIBRARY}
   argos3core_simulator

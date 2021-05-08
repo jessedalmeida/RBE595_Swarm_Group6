@@ -13,9 +13,7 @@ arguments
     dat_files (1,:) string
     num_robots (1,1) double = 100
 end
-clc;clear;close all;
-
-
+num_files = size(dat_files,2);
 A = readtable(dat_files(1));
 B = A{:,:};
 % Averaging the readings in the multiple dat files
@@ -27,7 +25,7 @@ B = B./num_files;
 
 % Determining the percentage of robots stopped, the average
 % number of valid robots, and averagae number of invalid robots over time
-c = distinguishable_colors(num_robots*num_tasks);
+c = distinguishable_colors(num_robots);
 
 num_valid_neighbors = zeros(size(B,1)/num_robots,6);
 num_invalid_neighbors = zeros(size(B,1)/num_robots,1);
