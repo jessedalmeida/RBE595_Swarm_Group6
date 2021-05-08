@@ -1,5 +1,5 @@
-function AnalyzeDatFile(dat_files, num_robots)
-% ANALYZEDATFILES - given a list of .dat files, will compile the data to
+function AnalyzeDatFile(dat_files)
+% ANALYZEDATFILES - given a folder of .dat files, will compile the data to
 % analyze the swarm behavior. Specifically for shape formation
 % Each .dat file must be the same length (aka same simulation duration)
 % Column 1 of .dat file should be simulation time
@@ -11,28 +11,33 @@ function AnalyzeDatFile(dat_files, num_robots)
 % robot moving or stopped).
 arguments
     dat_files (1,:) string
-    num_robots (1,1) double = 100
 end
-num_files = size(dat_files,2);
-A = readtable(dat_files(1));
+
+fileList = dir(dat_files + "/*.dat");
+num_files = size(fileList,1);
+
+filename = dat_files + "/" + fileList(1).name;
+A = readtable(filename);
 B = A{:,:};
 % Averaging the readings in the multiple dat files
 for i = 2:num_files
-    A = readtable(dat_files(i));
+    filename = dat_files + "/" + fileList(i).name;
+    A = readtable(filename);
     B = B + A{:,:};
 end
 B = B./num_files;
-
+num_robots = 1 + max(B(:,2));
+time_steps = size(B,1)/num_robots;
 % Determining the percentage of robots stopped, the average
 % number of valid robots, and averagae number of invalid robots over time
 c = distinguishable_colors(num_robots);
 
-num_valid_neighbors = zeros(size(B,1)/num_robots,6);
-num_invalid_neighbors = zeros(size(B,1)/num_robots,1);
+num_valid_neighbors = zeros(time_steps,6);
+num_invalid_neighbors = zeros(time_steps,1);
 
-time_step_average = zeros(size(B,1)/num_robots,1);
-average_valid_neighbors = zeros(size(B,1)/num_robots,1);
-average_invalid_neighbors = zeros(size(B,1)/num_robots,1);
+time_step_average = zeros(time_steps,1);
+average_valid_neighbors = zeros(time_steps,1);
+average_invalid_neighbors = zeros(time_steps,1);
 for j = 1:num_robots:size(B,1)
     time_step_average(floor(j/num_robots)+1,1) = sum(B(j:j+num_robots-1,5) >= 0)/num_robots;
     average_valid_neighbors(floor(j/num_robots)+1,1) = sum(B(j:j+num_robots-1,4))/num_robots;
