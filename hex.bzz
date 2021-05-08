@@ -10,8 +10,8 @@ function init() {
 # number of robots within a distance of X cm
 robots_in_dist = 0
 P = 0.01
-count = -1
-stopped_count = 20 # 20 is the default count stopping 
+count = -1.0
+stopped_count = 20.0 # 20 is the default count stopping 
 isStopped = False
 
 #
@@ -86,8 +86,8 @@ function step() {
       gotoc(max_speed, 0.0)           # velocity vector in cartesian coordinates (cm/s)
     }
   }
-  count = count - 1
-  # count = count - (1 - robots_in_dist[1]/6.0) # Decay for being in a good neighborhood
+  # count = count - 1
+  count = count - (1.0 - robots_in_dist[1]/6.0) # Decay for being in a good neighborhood
 
   debug_output()
 }

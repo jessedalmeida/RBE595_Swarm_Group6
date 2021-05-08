@@ -46,12 +46,12 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
       /* Get if a robot is stopped (aka count > 0) */
       buzzobj_t tCount = BuzzGet(t_vm, "count");
       /* Make sure it's the type we expect (an integer) */
-      if(!buzzobj_isint(tCount)) {
+      if(!buzzobj_isfloat(tCount)) {
          LOGERR << str_robot_id << ": variable 'tCount' has wrong type " << buzztype_desc[tCount->o.type] << std::endl;
          return;
       }
       /* Get the value */
-      int nCount = buzzobj_getint(tCount);
+      int nCount = buzzobj_getfloat(tCount);
       /* Set the mapping between robot id and number of valid neighbors */
       m_stopped[t_vm->robot] = nCount;
    }
@@ -60,7 +60,7 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
    std::map<int,int> m_validNeighbors;
    std::map<int,int> m_invalidNeighbors;
    /* Whether robots are stopped */
-   std::map<int,int> m_stopped;
+   std::map<int,float> m_stopped;
 };
 
 void CProximityLF::Init(TConfigurationNode& t_tree) {
