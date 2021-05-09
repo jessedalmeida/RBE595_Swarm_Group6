@@ -35,13 +35,14 @@ function step() {
       else if (data.distance < min_dist){
           num[0] = num[0] + 1
       }
-      else {
+      else if ((max_dist < data.distance) and (data.distance < max_dist + 2)){
         num[2] = num[2] + 1
       }
       return num
   }, {.0=0, .1=0, .2=0, .x=0.0, .y=0.0})
 	validNeighbors = robots_in_dist[1]
 	invalidNeighbors = robots_in_dist[0]
+  outerNeighbors = robots_in_dist[2]
 
 
 # ------------------ Obstacle Avoidance ------------

@@ -42,6 +42,17 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
       /* Set the mapping between robot id and number of valid neighbors */
       m_invalidNeighbors[t_vm->robot] = nInvalidNeighbors;
 
+      /* Get the current number of outer neighbors */
+      buzzobj_t tOuterNeighbors = BuzzGet(t_vm, "outerNeighbors");
+      /* Make sure it's the type we expect (an integer) */
+      if(!buzzobj_isint(tOuterNeighbors)) {
+         LOGERR << str_robot_id << ": variable 'tOuterNeighbors' has wrong type " << buzztype_desc[tOuterNeighbors->o.type] << std::endl;
+         return;
+      }
+      /* Get the value */
+      int nOuterNeighbors = buzzobj_getint(tOuterNeighbors);
+      /* Set the mapping between robot id and number of valid neighbors */
+      m_outerNeighbors[t_vm->robot] = nOuterNeighbors;
 
       /* Get if a robot is stopped (aka count > 0) */
       buzzobj_t tCount = BuzzGet(t_vm, "count");
@@ -59,6 +70,7 @@ struct GetRobotData : public CBuzzLoopFunctions::COperation {
    /** Store the number of robots that have "index" of valid neighbors */
    std::map<int,int> m_validNeighbors;
    std::map<int,int> m_invalidNeighbors;
+   std::map<int,int> m_outerNeighbors;
    /* Whether robots are stopped */
    std::map<int,int> m_stopped;
 };
@@ -99,7 +111,8 @@ void CProximityLF::PostStep() {
                 << i << "\t"
                 << cGetRobotData.m_invalidNeighbors[i] << "\t"
                 << cGetRobotData.m_validNeighbors[i] << "\t"
-                << cGetRobotData.m_stopped[i];
+                << cGetRobotData.m_stopped[i] << "\t"
+                << cGetRobotData.m_outerNeighbors[i];
         m_cOutFile << std::endl;
     }
 }

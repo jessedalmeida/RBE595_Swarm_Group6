@@ -11,7 +11,7 @@ function init() {
 robots_in_dist = 0
 P = 0.01
 count = -1
-stopped_count = 10
+stopped_count = 50
 isStopped = False
 
 #
@@ -25,8 +25,8 @@ function step() {
 
   debug.rays.clear()
 
-  min_dist = 29.0
-  max_dist = min_dist + 1.25
+  min_dist = 28.0
+  max_dist = min_dist + 2
   # count the number of neighbors that are within the specified range
   robots_in_dist = neighbors.reduce(function(rid, data, num){
       if ((min_dist <= data.distance) and (data.distance <= max_dist)){
@@ -37,7 +37,7 @@ function step() {
 					# num.x = num.x + (1.0/data.distance) * math.cos(data.azimuth)*math.cos(data.elevation)
 					# num.y = num.y + (1.0/data.distance) * math.sin(data.azimuth)*math.cos(data.elevation)
       }
-      else {
+      else if (data.distance < (min_dist + 1)*2.0) {
         num[2] = num[2] + 1
       }
       return num
@@ -45,15 +45,6 @@ function step() {
 	validNeighbors = robots_in_dist[1]
 	invalidNeighbors = robots_in_dist[0]
 
-  # if (id == 0){
-  # neighbors.foreach(
-  #   function(rid,data) {
-  #     x = data.distance * math.cos(data.elevation) * math.cos(data.azimuth)
-  #     y = data.distance * math.cos(data.elevation) * math.sin(data.azimuth)
-  #     z = data.distance * math.sin(data.elevation)
-  #     # debug.rays.add(255,0,0,x/100,y/100,0.5/100)
-  #   })
-# }
 
 # ------------------ Obstacle Avoidance ------------
 # obst is the average distance away from the robot all the other robots are
@@ -76,24 +67,25 @@ function step() {
     robots_in_dist.y = robots_in_dist.y / neighbors.count()
   }
 
-  if ((robots_in_dist[1] <= 6 and robots_in_dist[0] == 0) or (count > 0)){
-    # Pstop = P + math.log(robots_in_dist[1]+1)/math.log(7)
-		Pstop = P + robots_in_dist[1]/6.0
-	}
-  else{
-    Pstop = P + robots_in_dist[1]^2/6^2
+  # Pstop = P + math.log(robots_in_dist[1]+1)/math.log(7)
+  Pstop = 0.0
+  if ((robots_in_dist[1] > 0 and robots_in_dist[2] <=0)or (robots_in_dist == 2)){
+    Pstop = 1.0
+  } else if (robots_in_dist[1] > 0 and robots_in_dist[2] > 0){
+    Pstop = 0.25
   }
-
   rand = math.rng.uniform(1.0)
 
-  if (rand < Pstop) {
+  if (rand < Pstop and count < 0) {
     gotoc(0.0, 0.0)
+    isStopped = true 
     count = stopped_count
     # neighbors.broadcast("flash", 1
   	set_leds(255, 255, 0) # yellow flash
   }
   else if (count < 0){
     set_leds(0,0,0)
+    isStopped = false
     # obstacle avoid
     v = math.sqrt(robots_in_dist.x^2 + robots_in_dist.y^2) # Relative "distance" from proximity sensors
     threshold = 0.001 # Threshold at which to start moving away from obstacles
