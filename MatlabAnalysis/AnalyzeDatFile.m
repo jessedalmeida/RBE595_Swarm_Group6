@@ -28,19 +28,27 @@ B = B./num_files;
 c = distinguishable_colors(num_robots);
 
 num_valid_neighbors = zeros(size(B,1)/num_robots,6);
-num_invalid_neighbors = zeros(size(B,1)/num_robots,1);
+num_inside_neighbors = zeros(size(B,1)/num_robots,1);
+num_oustide_neighbors = zeros(size(B,1)/num_robots,1);
 
 time_step_average = zeros(size(B,1)/num_robots,1);
 average_valid_neighbors = zeros(size(B,1)/num_robots,1);
-average_invalid_neighbors = zeros(size(B,1)/num_robots,1);
+average_inside_neighbors = zeros(size(B,1)/num_robots,1);
+average_outside_neighbors = zeros(size(B,1)/num_robots,1);
 for j = 1:num_robots:size(B,1)
     time_step_average(floor(j/num_robots)+1,1) = sum(B(j:j+num_robots-1,5) >= 0)/num_robots;
     average_valid_neighbors(floor(j/num_robots)+1,1) = sum(B(j:j+num_robots-1,4))/num_robots;
-    average_invalid_neighbors(floor(j/num_robots)+1,1) = sum(B(j:j+num_robots-1,3))/num_robots;
+    average_inside_neighbors(floor(j/num_robots)+1,1) = sum(B(j:j+num_robots-1,3))/num_robots;
+    if size(B,2) == 6
+        average_outside_neighbors(floor(j/num_robots)+1,1) = sum(B(j:j+num_robots-1,6))/num_robots;
+    end
     
     for i = 1:6
         num_valid_neighbors(j,i) = sum(B(j:j+num_robots-1,4) == i);
-        num_invalid_neighbors(j,1) = sum(B(j:j+num_robots-1,3) > 0);
+        num_inside_neighbors(j,i) = sum(B(j:j+num_robots-1,3) > 0);
+        if size(B,2) == 6
+            num_oustide_neighbors(j,i) = sum(B(j:j+num_robots-1,6) > 0);
+        end
     end
 end
 % Stopped plot
@@ -63,7 +71,7 @@ title('Number of valid neighbors over time in Simulation','FontSize',18)
 
 % Invalid Neighbors plot
 figure()
-plot(B(1:num_robots:end,1),average_invalid_neighbors,...
+plot(B(1:num_robots:end,1),average_inside_neighbors,...
         'Color',c(3,:),'LineWidth',2);
 xlabel("Argos time steps (0.1 seconds)",'FontSize',16)
 ylabel(sprintf("Average number of invalid neighbors per robot"),'FontSize',16)
